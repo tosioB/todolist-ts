@@ -1,11 +1,11 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import "./App.scss";
+import "./assets/scss/App.scss";
 
-export interface Todo {
-  id: number;
+type Todo = {
+  id: string;
   title: string;
   status: boolean;
-}
+};
 
 const App: React.FC = () => {
   const [input, setInput] = useState<string>("");
@@ -21,12 +21,16 @@ const App: React.FC = () => {
 
   function handleAddClick() {
     const newTodo: Todo = {
-      id: Number(new Date()),
+      id: String(new Date().getTime()),
       title: input,
       status: false
     };
     setTodos([...todos, newTodo]);
     setInput("");
+  }
+
+  function handleDelClick(id: string) {
+    setTodos(todos.filter((el) => el.id !== id));
   }
 
   return (
@@ -46,20 +50,33 @@ const App: React.FC = () => {
 
         {/* todolist-box */}
         <ul className="todolist-box">
-          {todos.map((todo) => (
-            <li key={todo.id}>
-              <div className="txt-box">
-                <span className="chk-box">
-                  <input type="checkbox" />
-                </span>
-                <p className="title">{todo.title}</p>
-              </div>
-              <div className="btn-box">
-                <button className="btn edit-btn">수정</button>
-                <button className="btn del-btn">삭제</button>
-              </div>
-            </li>
-          ))}
+          {todos.map((todo) => {
+            return (
+              <li key={todo.id}>
+                <div className="txt-box">
+                  <span className="chk-box">
+                    <input type="checkbox" id={todo.id} />
+                    <label htmlFor={todo.id}>{todo.title}</label>
+                  </span>
+                  <span className="inp-box inp-edit">
+                    <input type="text" />
+                  </span>
+                </div>
+                <div className="btn-box">
+                  <button className="btn btn-edit">수정</button>
+                  <button className="btn btn-save">저장</button>
+                  <button
+                    className="btn btn-del"
+                    onClick={() => {
+                      handleDelClick(todo.id);
+                    }}
+                  >
+                    삭제
+                  </button>
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     </>
